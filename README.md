@@ -14,11 +14,9 @@ function ccipRead(
 ```
 
 After calling `ccipRead()`, either:
-1. returns immediate ABI-encoded results from the callback
-2. reverts `OffchainLookup` and then continues from the callback
-3. reverts (due to call or callback failure)
-
-Note: `ccipRead()` automatically handles recursive reverts.
+1. returns immediate ABI-encoded result from the callback
+2. reverts `OffchainLookup` and then returns from the callback
+3. reverts with an error (due to call or callback failure)
 
 ```solidity
 contract MyWrapper is CCIPReader {
@@ -32,8 +30,8 @@ contract MyWrapper is CCIPReader {
         // case #1: returned successfully from the call and the callback
         // case #2: reverted OffchainLookup
         // case #3: the call reverted or returned successful and the callback reverted
-        // NOTE: always use this boilerplate after calling ccipRead()
-        //       and place any extra logic inside of the callback
+        // NOTE: always use the following boilerplate after calling ccipRead()
+        //       and place all post-call processing in the callback
         assembly {
             return(add(v, 32), mload(v))
         }
@@ -47,7 +45,7 @@ contract MyWrapper is CCIPReader {
         // case #1: response is from the call
         // case #2: response is from OffchainLookup
         (uint256 one, string memory chonk) = abi.decode(carry, (uint256, string));
-        // do any processing
+        // post-call processing
     }
 }
 ```
@@ -61,4 +59,4 @@ Solidity header which defines `OffchainLookup` and a helper function `CCIPReadPr
 ### Test
 
 1. `npm i`
-2. `npm test`
+1. `npm test`
