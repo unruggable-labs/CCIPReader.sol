@@ -1,6 +1,6 @@
-# [`CCIPReader.sol`](./contracts//CCIPReader.sol)
+# CCIPReader.sol
 
-When a CCIP-Read function is called, it **bifurates**: either (1) returns immediately or (2) continues after an `OffchainLookup` revert is processed.
+When a CCIP-Read function is called, it **bifurcates**: either (1) returns immediately or (2) continues after an `OffchainLookup` revert is processed.
 
 To simplify this flow, inherit `CCIPReader` and use `ccipRead()` to call any CCIP-Read function.
 
@@ -52,7 +52,7 @@ contract MyWrapper is CCIPReader {
 }
 ```
 
-## [CCIPReadProtocol.sol](./contracts/CCIPReadProtocol.sol)
+## CCIPReadProtocol.sol
 
 Solidity header which defines `OffchainLookup` and a helper function `CCIPReadProtocol.decode()` that decodes revert calldata into an equivalent `OffchainLookupTuple` structure.
 
