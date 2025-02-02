@@ -1,0 +1,11 @@
+{
+	"type": "module",
+	"devDependencies": {
+		"@adraffy/blocksmith": "^0.1.50",
+		"@resolverworks/ezccip": "^0.0.22",
+		"ethers": "^6.13.5"
+	},
+	"scripts": {
+		"test": "node test/test.js"
+	}
+}

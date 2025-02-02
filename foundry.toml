@@ -1,0 +1,5 @@
+# https://book.getfoundry.sh/reference/config/overview
+
+[profile.default]
+src = "contracts"
+optimizer = true
