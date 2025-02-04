@@ -13,6 +13,8 @@ struct OffchainLookupTuple {
 }
 
 library CCIPReadProtocol {
+    /// This function decodes an `OffchainLookup` error into the properties of an `OffchainLookupTuple`
+    /// This is essentially a conversion from an error to a struct
     function decode(bytes memory v) internal pure returns (OffchainLookupTuple memory x) {
         v = abi.encodePacked(v); // make a copy
         assembly {
