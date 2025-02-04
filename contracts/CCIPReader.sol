@@ -13,7 +13,6 @@ struct Carry {
 }
 
 contract CCIPReader {
-
     /**
      * @notice A function that wraps, handles, and consistently returns responses from calls to a function within a target contract that can return directly OR return in response to offchain data resolution (subject to the ERC-3668 specification).
      * @param target - the real contract where OUR execution will occur
@@ -36,7 +35,7 @@ contract CCIPReader {
             /// tuples allow flexibility noting stack too deep constraints
             OffchainLookupTuple memory x = CCIPReadProtocol.decode(v);
             if (x.sender == target) {
-                /// We then wrap the error data in an `OffchainLookup` sent/'owned' by this contract 
+                /// We then wrap the error data in an `OffchainLookup` sent/'owned' by this contract
                 revert OffchainLookup(
                     address(this),
                     x.gateways,
@@ -57,18 +56,16 @@ contract CCIPReader {
         /// OR the call to the 'real' target reverts with a different error selector
         /// OR the call to OUR callback reverts with ANY error selector
         if (!ok) {
-            /// WE pass that revert through
-            /// TODO Does this play nicely with a nested `OffchainLookup` in the callback?
-            /// TODO Does this play nicely with the spec as implemented by well known libraries (ethers/viem)?
             assembly {
                 revert(add(v, 32), mload(v))
             }
         }
     }
 
-
     function ccipReadCallback(bytes memory ccip, bytes memory carry) external view {
         Carry memory state = abi.decode(carry, (Carry));
+        /// Since the callback can revert too (but has the same return structure)
+        /// We can reuse the calling infrastructure to call the callback
         bytes memory v = ccipRead(
             state.target, abi.encodeWithSelector(state.callback, ccip, state.carry), state.myCallback, state.myCarry
         );
