@@ -80,7 +80,7 @@ test("CCIPReader", async (T) => {
 		assert.deepEqual(seq.toArray(), collatzSeq(arg));
 	});
 
-	await T.test(`wrapped onchain: list(1)`, async (TT) => {
+	await T.test(`wrapped direct w/o offchain: list(1)`, async (TT) => {
 		const arg = extractArg(TT.name);
 		const [offchain, carry] = await Wrapper.wrap(
 			Offchain,
