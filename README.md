@@ -39,8 +39,8 @@ contract MyWrapper is CCIPReader {
 
     // NOTE: the return value of this function MUST be ABI-equivalent to the caller
     function doSomethingCallback(
-        bytes memory response, 
-        bytes memory carry
+        bytes memory response,
+        bytes memory carry // our call context
     ) external view returns (...) {
         // case #1: response is from the call
         // case #2: response is from OffchainLookup

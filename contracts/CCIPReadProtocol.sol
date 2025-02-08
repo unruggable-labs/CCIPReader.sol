@@ -2,7 +2,13 @@
 pragma solidity ^0.8.0;
 
 // https://eips.ethereum.org/EIPS/eip-3668
-error OffchainLookup(address sender, string[] urls, bytes request, bytes4 callback, bytes carry);
+error OffchainLookup(
+    address sender,
+    string[] urls,
+    bytes request,
+    bytes4 callback,
+    bytes carry
+);
 
 struct OffchainLookupTuple {
     address sender;
@@ -15,13 +21,17 @@ struct OffchainLookupTuple {
 library CCIPReadProtocol {
     /// This function decodes an `OffchainLookup` error into the properties of an `OffchainLookupTuple`
     /// This is essentially a conversion from an error to a struct
-    function decode(bytes memory v) internal pure returns (OffchainLookupTuple memory x) {
+    function decode(
+        bytes memory v
+    ) internal pure returns (OffchainLookupTuple memory x) {
         v = abi.encodePacked(v); // make a copy
         assembly {
             mstore(add(v, 4), sub(mload(v), 4)) // drop selector
             v := add(v, 4)
         }
-        (x.sender, x.gateways, x.request, x.selector, x.carry) =
-            abi.decode(v, (address, string[], bytes, bytes4, bytes));
+        (x.sender, x.gateways, x.request, x.selector, x.carry) = abi.decode(
+            v,
+            (address, string[], bytes, bytes4, bytes)
+        );
     }
 }

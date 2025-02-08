@@ -20,11 +20,12 @@ contract CCIPReader {
      * @param mySelector - the 4 bytes selector of OUR callback exit point
      * @param myCarry - encoded bytes data that we want to pass through to our exit point
      */
-    function ccipRead(address target, bytes memory call, bytes4 mySelector, bytes memory myCarry)
-        internal
-        view
-        returns (bytes memory v)
-    {
+    function ccipRead(
+        address target,
+        bytes memory call,
+        bytes4 mySelector,
+        bytes memory myCarry
+    ) internal view returns (bytes memory v) {
         /// We call the intended function that **could** revert with an `OffchainLookup`
         /// We destructure the response into an execution status bool and our return bytes
         bool ok;
@@ -41,7 +42,9 @@ contract CCIPReader {
                     x.gateways,
                     x.request,
                     this.ccipReadCallback.selector,
-                    abi.encode(Carry(target, x.selector, x.carry, mySelector, myCarry))
+                    abi.encode(
+                        Carry(target, x.selector, x.carry, mySelector, myCarry)
+                    )
                 );
             }
         }
@@ -50,7 +53,9 @@ contract CCIPReader {
         if (ok) {
             /// The exit point of this architecture is  OUR callback in the 'real'
             /// We pass through the response to that callback
-            (ok, v) = address(this).staticcall(abi.encodeWithSelector(mySelector, v, myCarry));
+            (ok, v) = address(this).staticcall(
+                abi.encodeWithSelector(mySelector, v, myCarry)
+            );
         }
 
         /// OR the call to the 'real' target reverts with a different error selector
@@ -62,12 +67,18 @@ contract CCIPReader {
         }
     }
 
-    function ccipReadCallback(bytes memory ccip, bytes memory carry) external view {
+    function ccipReadCallback(
+        bytes memory ccip,
+        bytes memory carry
+    ) external view {
         Carry memory state = abi.decode(carry, (Carry));
         /// Since the callback can revert too (but has the same return structure)
         /// We can reuse the calling infrastructure to call the callback
         bytes memory v = ccipRead(
-            state.target, abi.encodeWithSelector(state.callback, ccip, state.carry), state.myCallback, state.myCarry
+            state.target,
+            abi.encodeWithSelector(state.callback, ccip, state.carry),
+            state.myCallback,
+            state.myCarry
         );
         assembly {
             return(add(v, 32), mload(v))
